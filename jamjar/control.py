@@ -113,43 +113,4 @@ def seaborn():
     )
     plt.show()
 
-
-def graph_energy():
-    cooler.cool(
-        # record=True,
-        log=True,
-    )
-    df = pd.DataFrame(cooler.telemetry)
-    fig = make_subplots(specs=[[{"secondary_y":True}]])
-
-    trace1 = go.Line(
-        y=cooler.telemetry["global_energy"],
-        name="Global Energy",
-        yaxis="y1",
-    )
-
-    events = cooler.telemetry["change_accepted"]
-    t = cooler.max_temp//100
-    compress = [sum(events[t*i:t*(i+1)]) for i in range(len(events)//t)]
-    expand = [compress[i//t] for i in range(len(events))]
-    #expand[-1] = 1000 # hack to manage y-scale
-
-    trace2 = go.Bar(
-        y=expand,
-        name="State Change Acceptance",
-        yaxis="y2",
-        opacity=1,
-        marker={"color":"green"},
-    )
-
-    plot_data = [trace1, trace2]
-    layout = go.Layout(
-        yaxis={"title":"Global Energy"},
-        yaxis2={"title":"State Change Acceptance", "overlaying":"y", "side":"right", "color":"red"},
-    )
-
-    go.Figure(data=plot_data, layout=layout).show()
-
-
-
 seaborn()
